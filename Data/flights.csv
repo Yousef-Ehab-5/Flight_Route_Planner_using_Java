@@ -1,0 +1,72 @@
+source,destination,cost,duration,airline
+CAI,DXB,350,200,EgyptAir
+CAI,LHR,620,420,EgyptAir
+CAI,CDG,580,360,Air France
+CAI,IST,310,180,Turkish Airlines
+CAI,FRA,550,330,Lufthansa
+DXB,LHR,480,420,Emirates
+DXB,JFK,890,840,Emirates
+DXB,SIN,410,480,Emirates
+DXB,BKK,350,380,Emirates
+DXB,HKG,450,510,Emirates
+DXB,NRT,620,570,Emirates
+DXB,SYD,780,840,Emirates
+DXB,CDG,520,420,Emirates
+DXB,FRA,490,400,Lufthansa
+LHR,JFK,650,420,British Airways
+LHR,CDG,180,75,British Airways
+LHR,FRA,250,120,British Airways
+LHR,AMS,170,65,British Airways
+LHR,SIN,750,780,British Airways
+LHR,HKG,700,720,Cathay Pacific
+LHR,NRT,800,720,British Airways
+LHR,SYD,1200,1320,Qantas
+JFK,LHR,620,420,American Airlines
+JFK,CDG,580,450,Air France
+JFK,FRA,690,480,Lufthansa
+JFK,NRT,950,840,Japan Airlines
+JFK,SIN,1100,1080,Singapore Airlines
+CDG,LHR,180,75,Air France
+CDG,FRA,200,95,Air France
+CDG,AMS,140,65,Air France
+CDG,SIN,780,780,Air France
+CDG,NRT,920,780,Air France
+FRA,LHR,250,120,Lufthansa
+FRA,AMS,140,65,Lufthansa
+FRA,SIN,700,780,Lufthansa
+FRA,NRT,880,720,Lufthansa
+FRA,DXB,480,395,Lufthansa
+SIN,HKG,280,240,Singapore Airlines
+SIN,NRT,600,480,Singapore Airlines
+SIN,SYD,550,510,Singapore Airlines
+SIN,BKK,150,180,Singapore Airlines
+SIN,KUL,90,90,AirAsia
+HKG,NRT,450,240,Cathay Pacific
+HKG,SYD,600,540,Cathay Pacific
+HKG,SIN,280,240,Cathay Pacific
+NRT,SYD,750,600,Japan Airlines
+NRT,HKG,450,240,Japan Airlines
+BKK,SIN,150,180,Thai Airways
+BKK,KUL,120,150,Thai Airways
+BKK,HKG,380,270,Thai Airways
+KUL,SIN,90,90,AirAsia
+KUL,BKK,120,150,AirAsia
+IST,LHR,380,240,Turkish Airlines
+IST,FRA,290,195,Turkish Airlines
+IST,AMS,330,210,Turkish Airlines
+IST,DXB,340,230,Turkish Airlines
+IST,CAI,310,180,Turkish Airlines
+AMS,LHR,170,65,KLM
+AMS,FRA,140,65,KLM
+AMS,CDG,140,70,KLM
+AMS,IST,320,210,KLM
+MAD,LHR,240,145,Iberia
+MAD,CDG,220,135,Iberia
+MAD,FRA,280,165,Iberia
+FCO,LHR,290,155,Alitalia
+FCO,FRA,260,140,Alitalia
+FCO,CDG,250,145,Alitalia
+FCO,IST,280,165,Alitalia
+SYD,SIN,550,510,Qantas
+SYD,HKG,600,540,Qantas
+SYD,NRT,750,600,Qantas
