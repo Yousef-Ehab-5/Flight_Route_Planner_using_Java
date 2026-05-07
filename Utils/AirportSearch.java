@@ -1,7 +1,6 @@
 package utils;
 
 import model.Airport;
-
 import java.util.ArrayList;
 import java.util.List;
 
