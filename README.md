@@ -1,7 +1,5 @@
-# Flight_Route_Planner_using_Java
 # Multi-Criteria Flight Route Planner
 ## Project Report — Data Structures & Algorithms
-### Communication and Computer Engineering — Year 2
 
 ---
 
