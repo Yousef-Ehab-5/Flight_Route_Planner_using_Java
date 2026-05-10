@@ -10,7 +10,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Airport;
 import model.Flight;
@@ -20,13 +19,13 @@ import java.util.List;
 
 /**
  * MainDashboard.java
- * 
+ *
  * The main JavaFX application window.
  * Acts as the root controller that:
  *   1. Loads data from CSV files into the flight graph
  *   2. Hosts all panels in a TabPane
  *   3. Provides a navigation sidebar
- * 
+ *
  * GUI Structure:
  *   ┌─────────────────────────────────────────┐
  *   │           HEADER / TITLE BAR            │
@@ -48,6 +47,21 @@ public class Maindashboard extends Application {
     // Status bar label at the bottom
     private Label statusLabel;
 
+    // ── Light Theme Palette ──────────────────────
+    private static final String BG_MAIN      = "#f0f4ff"; // soft lavender-white
+    private static final String BG_PANEL     = "#ffffff"; // white
+    private static final String BG_CARD      = "#eff6ff"; // blue-50
+    private static final String ACCENT       = "#4f46e5"; // indigo-600
+    private static final String ACCENT_RED   = "#dc2626"; // red-600
+    private static final String ACCENT_SKY   = "#0369a1"; // sky-700
+    private static final String ACCENT_TEAL  = "#0d9488"; // teal-600
+    private static final String TEXT_MUTED   = "#64748b"; // slate-500
+    private static final String TEXT_LABEL   = "#475569"; // slate-600
+    private static final String BORDER_COLOR = "#c7d2fe"; // indigo-200
+    private static final String BORDER_CARD  = "#e2e8f0"; // slate-200
+    private static final String STATUS_BG    = "#eef2ff"; // indigo-50
+    // ────────────────────────────────────────────
+
     /**
      * JavaFX entry point.
      * Called by the JavaFX runtime after launch().
@@ -61,7 +75,7 @@ public class Maindashboard extends Application {
 
         // ── Step 2: Build the UI ──
         BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #7efcee;");
+        root.setStyle("-fx-background-color: " + BG_MAIN + ";");
 
         // Header
         VBox header = buildHeader();
@@ -122,19 +136,17 @@ public class Maindashboard extends Application {
         VBox header = new VBox(4);
         header.setAlignment(Pos.CENTER);
         header.setPadding(new Insets(16, 20, 12, 20));
-        header.setStyle("-fx-background-color: #16213e; " +
-                        "-fx-border-color: #0f3460; " +
+        header.setStyle("-fx-background-color: " + BG_PANEL + "; " +
+                        "-fx-border-color: " + BORDER_COLOR + "; " +
                         "-fx-border-width: 0 0 2 0;");
 
         Label title = new Label("✈  Multi-Criteria Flight Route Planner");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 22));
-        title.setTextFill(Color.web("#e94560"));
+        title.setTextFill(Color.web(ACCENT));
 
-        Label subtitle = new Label("Data Structures & Algorithms Project  |  Graph Algorithms: Dijkstra · BFS · DFS");
-        subtitle.setFont(Font.font("Arial", 12));
-        subtitle.setTextFill(Color.web("#a8b2d8"));
+        
 
-        header.getChildren().addAll(title, subtitle);
+        
         return header;
     }
 
@@ -144,7 +156,7 @@ public class Maindashboard extends Application {
     private TabPane buildTabPane() {
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tabPane.setStyle("-fx-background-color: #1a1a2e; " +
+        tabPane.setStyle("-fx-background-color: " + BG_MAIN + "; " +
                          "-fx-tab-min-width: 140px;");
 
         // ── Tab 1: Home / Dashboard ──
@@ -166,7 +178,17 @@ public class Maindashboard extends Application {
         Routefinderpanel routePanel = new Routefinderpanel(graph, this::setStatus);
         routeTab.setContent(routePanel.buildPanel());
 
-        tabPane.getTabs().addAll(homeTab, airportTab, flightTab, routeTab);
+        // ── Tab 5: Graph Visualization ──
+        Tab graphTab = new Tab("📊  Graph");
+        Graphvisualizatiopanel graphPanel = new Graphvisualizatiopanel(graph);
+        graphTab.setContent(graphPanel.buildPanel());
+
+        // ── Tab 6: DFS Visualizer ──
+        Tab dfsTab = new Tab("🔍  DFS Visualizer");
+        Dfsvisulaizerpannel dfsPanel = new Dfsvisulaizerpannel(graph, this::setStatus);
+        dfsTab.setContent(dfsPanel.buildPanel());
+
+        tabPane.getTabs().addAll(homeTab, airportTab, flightTab, routeTab, graphTab, dfsTab);
         return tabPane;
     }
 
@@ -176,18 +198,18 @@ public class Maindashboard extends Application {
     private ScrollPane buildHomePage() {
         VBox content = new VBox(20);
         content.setPadding(new Insets(30));
-        content.setStyle("-fx-background-color: #1a1a2e;");
+        content.setStyle("-fx-background-color: " + BG_MAIN + ";");
 
         // Welcome section
         Label welcome = new Label("Welcome to the Flight Route Planner");
         welcome.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        welcome.setTextFill(Color.web("#e94560"));
+        welcome.setTextFill(Color.web(ACCENT));
 
         Label desc = new Label(
             "This system models airline routes as a weighted directed graph and applies\n" +
             "graph algorithms to compute optimal travel routes under multiple criteria."
         );
-        desc.setTextFill(Color.web("#ccd6f6"));
+        desc.setTextFill(Color.web(TEXT_MUTED));
         desc.setFont(Font.font("Arial", 13));
 
         // Stats grid
@@ -203,7 +225,7 @@ public class Maindashboard extends Application {
 
         ScrollPane scroll = new ScrollPane(content);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: #1a1a2e; -fx-background: #1a1a2e;");
+        scroll.setStyle("-fx-background-color: " + BG_MAIN + "; -fx-background: " + BG_MAIN + ";");
         return scroll;
     }
 
@@ -217,10 +239,9 @@ public class Maindashboard extends Application {
         grid.setPadding(new Insets(10, 0, 10, 0));
 
         String[][] stats = {
-            {"✈  Airports",      String.valueOf(graph.getAirportCount())},
-            {"🛬  Flights",       String.valueOf(graph.getFlightCount())},
-            {"📊  Algorithms",   "4 (Dijkstra×2, BFS, DFS)"},
-            {"💾  Data Structures", "Graph, PQ, HashMap, Stack, Queue"},
+            {"✈  Airports",         String.valueOf(graph.getAirportCount())},
+            {"🛬  Flights",          String.valueOf(graph.getFlightCount())},
+            
         };
 
         for (int i = 0; i < stats.length; i++) {
@@ -238,18 +259,18 @@ public class Maindashboard extends Application {
     private VBox buildStatCard(String label, String value) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(14));
-        card.setStyle("-fx-background-color: #16213e; " +
+        card.setStyle("-fx-background-color: " + BG_PANEL + "; " +
                       "-fx-background-radius: 8; " +
-                      "-fx-border-color: #0f3460; " +
+                      "-fx-border-color: " + BORDER_COLOR + "; " +
                       "-fx-border-radius: 8; " +
                       "-fx-border-width: 1;");
 
         Label lbl = new Label(label);
-        lbl.setTextFill(Color.web("#a8b2d8"));
+        lbl.setTextFill(Color.web(TEXT_MUTED));
         lbl.setFont(Font.font("Arial", 12));
 
         Label val = new Label(value);
-        val.setTextFill(Color.web("#e94560"));
+        val.setTextFill(Color.web(ACCENT));
         val.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
         card.getChildren().addAll(lbl, val);
@@ -262,31 +283,34 @@ public class Maindashboard extends Application {
     private TitledPane buildAlgorithmSummary() {
         VBox content = new VBox(8);
         content.setPadding(new Insets(12));
+        content.setStyle("-fx-background-color: " + BG_PANEL + ";");
 
         String[][] algos = {
-            {"Dijkstra (Cheapest)",  "O((V+E) log V)", "Finds minimum-cost route using Priority Queue"},
-            {"Dijkstra (Fastest)",   "O((V+E) log V)", "Finds minimum-duration route"},
-            {"BFS (Min Layovers)",   "O(V+E)",         "Finds fewest-hops route using Queue"},
-            {"DFS (Traversal)",      "O(V+E)",         "Explores graph, checks connectivity using Stack"},
-            {"Balanced Route",       "O((V+E) log V)", "Composite score: costWeight×cost + timeWeight×time"},
+            {"Dijkstra (Cheapest)",  "", "Finds minimum-cost route using Priority Queue"},
+            {"Dijkstra (Fastest)",   "", "Finds minimum-duration route"},
+            {"BFS (Min Layovers)",   "",         "Finds fewest-hops route using Queue"},
+            {"DFS (Traversal)",      "",         "Explores graph, checks connectivity using Stack"},
+            
         };
 
         for (String[] algo : algos) {
             HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER_LEFT);
+            row.setPadding(new Insets(6, 8, 6, 8));
+            row.setStyle("-fx-background-color: " + BG_CARD + "; -fx-background-radius: 5;");
 
             Label name = new Label(algo[0]);
             name.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            name.setTextFill(Color.web("#64ffda"));
+            name.setTextFill(Color.web(ACCENT_TEAL));
             name.setMinWidth(180);
 
             Label complexity = new Label(algo[1]);
-            complexity.setTextFill(Color.web("#e94560"));
+            complexity.setTextFill(Color.web(ACCENT_RED));
             complexity.setFont(Font.font("Arial", 11));
             complexity.setMinWidth(130);
 
             Label desc = new Label(algo[2]);
-            desc.setTextFill(Color.web("#ccd6f6"));
+            desc.setTextFill(Color.web(TEXT_LABEL));
             desc.setFont(Font.font("Arial", 11));
 
             row.getChildren().addAll(name, complexity, desc);
@@ -294,7 +318,6 @@ public class Maindashboard extends Application {
         }
 
         TitledPane pane = new TitledPane("📐  Algorithms & Complexity", content);
-        pane.setStyle("-fx-text-fill: #0e0f0f;");
         pane.setExpanded(true);
         return pane;
     }
@@ -305,31 +328,35 @@ public class Maindashboard extends Application {
     private TitledPane buildDSASummary() {
         VBox content = new VBox(8);
         content.setPadding(new Insets(12));
+        content.setStyle("-fx-background-color: " + BG_PANEL + ";");
 
         String[][] ds = {
-            {"Graph (Adjacency List)", "Vertices=Airports, Edges=Flights", "O(V+E) space — efficient for sparse networks"},
-            {"Priority Queue (Min-Heap)", "Used in Dijkstra", "O(log V) insert/extract — drives optimal path selection"},
-            {"HashMap", "Airport lookup, dist/parent tracking", "O(1) average — fast key-based access"},
-            {"LinkedList", "Adjacency lists, route storage", "O(1) append — ideal for dynamic edge lists"},
-            {"Queue (LinkedList)", "BFS frontier", "O(1) enqueue/dequeue — level-by-level traversal"},
-            {"Stack", "DFS traversal, path reconstruction", "O(1) push/pop — LIFO for depth-first search"},
+            {"Graph (Adjacency List)",      "Vertices=Airports, Edges=Flights",       ""},
+            {"Priority Queue (Min-Heap)",   "Used in Dijkstra",                       " "},
+            {"HashMap",                     "Airport lookup, dist/parent tracking",   ""},
+            {"LinkedList",                  "Adjacency lists, route storage",         ""},
+            {"Queue (LinkedList)",          "BFS frontier",                           " "},
+            {"Stack",                       "DFS traversal, path reconstruction",     ""},
         };
 
         for (String[] row : ds) {
             VBox card = new VBox(3);
-            card.setPadding(new Insets(8));
-            card.setStyle("-fx-background-color: #0f3460; -fx-background-radius: 5;");
+            card.setPadding(new Insets(8, 10, 8, 10));
+            card.setStyle("-fx-background-color: " + BG_CARD + "; " +
+                          "-fx-background-radius: 5; " +
+                          "-fx-border-color: " + BORDER_CARD + "; " +
+                          "-fx-border-radius: 5; -fx-border-width: 1;");
 
             Label name = new Label(row[0]);
             name.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            name.setTextFill(Color.web("#64ffda"));
+            name.setTextFill(Color.web(ACCENT_SKY));
 
             Label usage = new Label("Used for: " + row[1]);
-            usage.setTextFill(Color.web("#a8b2d8"));
+            usage.setTextFill(Color.web(TEXT_MUTED));
             usage.setFont(Font.font("Arial", 11));
 
             Label why = new Label(row[2]);
-            why.setTextFill(Color.web("#ccd6f6"));
+            why.setTextFill(Color.web(TEXT_LABEL));
             why.setFont(Font.font("Arial", 10));
 
             card.getChildren().addAll(name, usage, why);
@@ -347,13 +374,13 @@ public class Maindashboard extends Application {
     private HBox buildStatusBar() {
         HBox bar = new HBox();
         bar.setPadding(new Insets(6, 16, 6, 16));
-        bar.setStyle("-fx-background-color: #16213e; " +
-                     "-fx-border-color: #0f3460; " +
+        bar.setStyle("-fx-background-color: " + STATUS_BG + "; " +
+                     "-fx-border-color: " + BORDER_COLOR + "; " +
                      "-fx-border-width: 1 0 0 0;");
 
         statusLabel = new Label("Initializing...");
-        statusLabel.setTextFill(Color.web("#64ffda"));
-        statusLabel.setFont(Font.font("Arial", 11));
+        statusLabel.setTextFill(Color.web(ACCENT_TEAL));
+        statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 11));
 
         bar.getChildren().add(statusLabel);
         return bar;
@@ -362,7 +389,7 @@ public class Maindashboard extends Application {
     /**
      * Updates the status bar message.
      * Called as a callback from child panels.
-     * 
+     *
      * @param message Status message to display
      */
     public void setStatus(String message) {
