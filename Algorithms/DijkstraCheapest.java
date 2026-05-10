@@ -3,7 +3,6 @@ package algorithms;
 import graph.FlightGraph;
 import model.Flight;
 import model.Route;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,48 +11,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-/**
- * DijkstraCheapest.java
- * 
- * Finds the cheapest (minimum cost) route between two airports
- * using Dijkstra's shortest path algorithm with a Min-Heap (PriorityQueue).
- * 
+/*
+  *--DijkstraCheapest.java
+  *BY: Yousef
+  
+Finds the cheapest (minimum cost) route between two airports
+using Dijkstra's shortest path algorithm with a Min-Heap (PriorityQueue).
+ 
  * ── Algorithm: Dijkstra's Shortest Path ──
- * 
+ 
  * Pseudocode:
- *   1. Initialize dist[source] = 0, dist[all others] = ∞
- *   2. Insert (source, 0) into min-heap
- *   3. While heap is not empty:
- *       a. Extract node u with minimum dist
- *       b. For each neighbor v of u:
- *           If dist[u] + weight(u,v) < dist[v]:
- *               Update dist[v]
- *               Update parent[v] = u
- *               Insert (v, dist[v]) into heap
- *   4. Reconstruct path using parent map
- * 
+    1. Initialize dist[source] = 0, dist[all others] = ∞
+    2. Insert (source, 0) into min-heap
+    3. While heap is not empty:
+        a. Extract node u with minimum dist
+        b. For each neighbor v of u:
+            If dist[u] + weight(u,v) < dist[v]:
+                Update dist[v]
+                Update parent[v] = u
+                Insert (v, dist[v]) into heap
+    4. Reconstruct path using parent map
+  
  * ── Why Dijkstra? ──
- *   - Optimal for non-negative edge weights (cost is always ≥ 0)
- *   - More efficient than Bellman-Ford for sparse graphs
- *   - Min-heap gives O(log V) extract-min operations
- * 
+    - Optimal for non-negative edge weights (cost is always ≥ 0)
+    - More efficient than Bellman-Ford for sparse graphs
+    - Min-heap gives O(log V) extract-min operations
+  
  * ── Complexity ──
- *   Time:  O((V + E) log V)
- *   Space: O(V)   — for dist[], parent[], and heap
+    Time:  O((V + E) log V)
+    Space: O(V)   — for dist[], parent[], and heap
  */
 public class DijkstraCheapest {
 
     // Number of nodes explored (for experimental evaluation)
     private int nodesExplored;
 
-    /**
-     * Finds the cheapest route from source to destination.
-     * 
-     * @param graph       The flight graph
-     * @param source      Source airport IATA code
-     * @param destination Destination airport IATA code
-     * @return Route object with path, cost, duration, and layovers
-     */
+    
+     // Finds the cheapest route from source to destination.
+     
     public Route findCheapestRoute(FlightGraph graph, String source, String destination) {
 
         nodesExplored = 0;
@@ -71,7 +66,8 @@ public class DijkstraCheapest {
         Map<String, Integer> durationMap = new HashMap<>();
 
         // Initialize all distances to infinity
-        for (String code : graph.getAllAirportCodes()) {
+        for (String code : graph.getAllAirportCodes()) 
+        {
             dist.put(code, Double.MAX_VALUE);
             parent.put(code, null);
             durationMap.put(code, 0);
@@ -83,7 +79,7 @@ public class DijkstraCheapest {
         // ── Step 2: Priority Queue (Min-Heap) ──
         // Stores (airportCode, costSoFar)
         // PriorityQueue ordered by cost → acts as a min-heap
-        PriorityQueue<double[]> pq = new PriorityQueue<>((a, b) -> Double.compare(a[1], b[1]));
+        
 
         // We use a double[]: [hashCode placeholder, cost]
         // But since PriorityQueue needs comparison, we use a small helper array:
@@ -101,7 +97,8 @@ public class DijkstraCheapest {
         minHeap.offer(new Object[]{source, 0.0});
 
         // ── Step 3: Main Dijkstra loop ──
-        while (!minHeap.isEmpty()) {
+        while (!minHeap.isEmpty()) 
+        {
 
             // Extract the airport with minimum cost — O(log V)
             Object[] current = minHeap.poll();
@@ -111,19 +108,22 @@ public class DijkstraCheapest {
             nodesExplored++;
 
             // Skip stale entries (lazy deletion pattern)
-            if (costU > dist.get(u)) {
+            if (costU > dist.get(u)) 
+            {
                 continue;
             }
 
             // Early termination: found destination
-            if (u.equals(destination)) {
+            if (u.equals(destination)) 
+            {
                 break;
             }
 
             // ── Step 4: Relax edges ──
             LinkedList<Flight> neighbors = graph.getFlightsFrom(u);
 
-            for (Flight flight : neighbors) {
+            for (Flight flight : neighbors) 
+            {
                 String v = flight.getDestination();
 
                 // Skip if destination airport not in graph
@@ -133,7 +133,8 @@ public class DijkstraCheapest {
                 double newCost = dist.get(u) + flight.getCost();
 
                 // Relax if better path found
-                if (newCost < dist.get(v)) {
+                if (newCost < dist.get(v)) 
+                {
                     dist.put(v, newCost);
                     parent.put(v, u);
                     // Track duration along cheapest path
@@ -148,11 +149,9 @@ public class DijkstraCheapest {
         return buildRoute(source, destination, dist, parent, durationMap, "Cheapest");
     }
 
-    /**
-     * Reconstructs the route path from the parent map.
-     * Uses a Stack (via Collections.reverse) for path reversal.
-     * 
-     * Time: O(V) in the worst case
+    /*
+      Reconstructs the route path from the parent map.
+      Uses a Stack (via Collections.reverse) for path reversal.
      */
     private Route buildRoute(String source, String destination,
                              Map<String, Double> dist,
@@ -161,7 +160,8 @@ public class DijkstraCheapest {
                              String mode) {
 
         // No path found
-        if (dist.get(destination) == null || dist.get(destination) == Double.MAX_VALUE) {
+        if (dist.get(destination) == null || dist.get(destination) == Double.MAX_VALUE) 
+        {
             return null; // No route exists
         }
 
