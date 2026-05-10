@@ -14,35 +14,31 @@ import java.util.PriorityQueue;
 
 /**
  * DijkstraFastest.java
- * 
- * Finds the fastest (minimum total duration) route between two airports
- * using Dijkstra's algorithm, but optimizing for duration instead of cost.
- * 
+ * BY: Abdallah
+  
+  Finds the fastest (minimum total duration) route between two airports
+  using Dijkstra's algorithm, but optimizing for duration instead of cost.
+ 
  * ── How it Differs from DijkstraCheapest ──
- *   - The edge weight used for relaxation is flight.getDurationMinutes()
- *   - The result minimizes total travel time, not cost
- * 
+    - The edge weight used for relaxation is flight.getDurationMinutes()
+    - The result minimizes total travel time, not cost
+  
  * ── Pseudocode ──
- *   Same as Dijkstra, but with:
- *     weight(u, v) = flight duration in minutes
- * 
+   Same as Dijkstra, but with:
+      weight(u, v) = flight duration in minutes
+ 
  * ── Complexity ──
- *   Time:  O((V + E) log V)
- *   Space: O(V)
+    Time:  O((V + E) log V)
+    Space: O(V)
  */
 public class Dijkstrafastest {
 
-    // Number of nodes explored (for benchmarking)
-    private int nodesExplored;
+    
+    private int nodesExplored; // Number of nodes explored (for benchmarking)
 
-    /**
-     * Finds the fastest route from source to destination.
-     * 
-     * @param graph       The flight graph
-     * @param source      Source airport IATA code
-     * @param destination Destination airport IATA code
-     * @return Route object with the minimum-duration path
-     */
+    
+    // Finds the fastest route from source to destination.
+     
     public Route findFastestRoute(FlightGraph graph, String source, String destination) {
 
         nodesExplored = 0;
@@ -113,9 +109,9 @@ public class Dijkstrafastest {
         return buildRoute(source, destination, duration, parent, costMap, "Fastest");
     }
 
-    /**
-     * Reconstructs the path from the parent map.
-     */
+    
+     // Reconstructs the path from the parent map.
+    
     private Route buildRoute(String source, String destination,
                              Map<String, Integer> duration,
                              Map<String, String> parent,
@@ -147,9 +143,8 @@ public class Dijkstrafastest {
         return new Route(path, totalCost, totalDuration, mode);
     }
 
-    /**
-     * Returns nodes explored count for benchmarking.
-     */
+    //Returns nodes explored count for benchmarking.
+   
     public int getNodesExplored() {
         return nodesExplored;
     }
