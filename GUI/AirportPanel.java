@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 /**
  * AirportPanel.java
- * 
+ *
  * JavaFX panel for Airport Management operations.
  * Allows users to:
  *   - View all airports in a sortable table
@@ -46,9 +46,26 @@ public class AirportPanel {
     private TextField searchField;
     private ComboBox<String> searchTypeBox;
 
+    // ── Light Theme Palette ──────────────────────
+    private static final String BG_MAIN      = "#f0f4ff"; // soft lavender-white
+    private static final String BG_PANEL     = "#ffffff"; // white panels
+    private static final String BG_INPUT     = "#f1f5f9"; // slate-100 inputs
+    private static final String ACCENT       = "#4f46e5"; // indigo
+    private static final String ACCENT_RED   = "#dc2626"; // red for destructive actions
+    private static final String ACCENT_GREEN = "#16a34a"; // green
+    private static final String ACCENT_BLUE  = "#3b82f6"; // blue for secondary actions
+    private static final String ACCENT_SLATE = "#64748b"; // slate for neutral actions
+    private static final String TEXT_MAIN    = "#1e293b"; // dark slate
+    private static final String TEXT_MUTED   = "#64748b"; // medium slate
+    private static final String TEXT_LABEL   = "#475569"; // form labels
+    private static final String BORDER_COLOR = "#c7d2fe"; // indigo-200
+    private static final String BORDER_INPUT = "#93c5fd"; // blue-300
+    private static final String PLACEHOLDER  = "#94a3b8"; // slate-400
+    // ────────────────────────────────────────────
+
     /**
      * Constructor.
-     * 
+     *
      * @param graph          The shared flight graph
      * @param statusCallback Callback to update the main status bar
      */
@@ -63,12 +80,12 @@ public class AirportPanel {
     public ScrollPane buildPanel() {
         VBox root = new VBox(16);
         root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: #1a1a2e;");
+        root.setStyle("-fx-background-color: " + BG_MAIN + ";");
 
         // Title
         Label title = new Label("🛫  Airport Management");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        title.setTextFill(Color.web("#e94560"));
+        title.setTextFill(Color.web(ACCENT));
 
         // Search bar section
         HBox searchSection = buildSearchSection();
@@ -90,7 +107,7 @@ public class AirportPanel {
 
         ScrollPane scroll = new ScrollPane(root);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: #1a1a2e; -fx-background: #1a1a2e;");
+        scroll.setStyle("-fx-background-color: " + BG_MAIN + "; -fx-background: " + BG_MAIN + ";");
         return scroll;
     }
 
@@ -100,6 +117,11 @@ public class AirportPanel {
     private HBox buildSearchSection() {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
+        box.setPadding(new Insets(10, 12, 10, 12));
+        box.setStyle("-fx-background-color: " + BG_PANEL + "; " +
+                     "-fx-background-radius: 8; " +
+                     "-fx-border-color: " + BORDER_COLOR + "; " +
+                     "-fx-border-radius: 8; -fx-border-width: 1;");
 
         searchTypeBox = new ComboBox<>();
         searchTypeBox.getItems().addAll("Keyword", "City", "Country");
@@ -112,25 +134,20 @@ public class AirportPanel {
         searchField.setStyle(getInputStyle());
         HBox.setHgrow(searchField, Priority.ALWAYS);
 
-        Button searchBtn = styledButton("🔍 Search", "#0f3460");
+        Button searchBtn = styledButton("🔍 Search", ACCENT_BLUE);
         searchBtn.setOnAction(e -> performSearch());
 
-        Button clearBtn = styledButton("✕ Clear", "#333");
+        Button clearBtn = styledButton("✕ Clear", ACCENT_SLATE);
         clearBtn.setOnAction(e -> {
             searchField.clear();
             refreshTable();
         });
 
-        box.getChildren().addAll(new Label("Search:"), searchTypeBox, searchField, searchBtn, clearBtn);
+        Label searchLabel = new Label("Search:");
+        searchLabel.setTextFill(Color.web(TEXT_MUTED));
+        searchLabel.setFont(Font.font("Arial", 12));
 
-        // Style labels
-        for (var node : box.getChildren()) {
-            if (node instanceof Label) {
-                ((Label) node).setTextFill(Color.web("#ccd6f6"));
-                ((Label) node).setFont(Font.font("Arial", 12));
-            }
-        }
-
+        box.getChildren().addAll(searchLabel, searchTypeBox, searchField, searchBtn, clearBtn);
         return box;
     }
 
@@ -141,8 +158,10 @@ public class AirportPanel {
         TableView<Airport> table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefHeight(280);
-        table.setStyle("-fx-background-color: #16213e; -fx-control-inner-background: #16213e; " +
-                       "-fx-text-fill: #ccd6f6;");
+        table.setStyle("-fx-background-color: " + BG_PANEL + "; " +
+                       "-fx-control-inner-background: " + BG_PANEL + "; " +
+                       "-fx-text-fill: " + TEXT_MAIN + "; " +
+                       "-fx-border-color: " + BORDER_COLOR + "; -fx-border-radius: 6;");
         table.setPlaceholder(new Label("No airports found"));
 
         TableColumn<Airport, String> codeCol = new TableColumn<>("Code");
@@ -184,10 +203,10 @@ public class AirportPanel {
         addFormRow(form, 2, "City *:", cityField);
         addFormRow(form, 3, "Country *:", countryField);
 
-        Button addBtn = styledButton("➕ Add Airport", "#e94560");
+        Button addBtn = styledButton("➕ Add Airport", ACCENT);
         addBtn.setOnAction(e -> addAirport());
 
-        Button clearBtn = styledButton("✕ Clear", "#555");
+        Button clearBtn = styledButton("✕ Clear", ACCENT_SLATE);
         clearBtn.setOnAction(e -> clearForm());
 
         HBox btnRow = new HBox(10, addBtn, clearBtn);
@@ -196,7 +215,7 @@ public class AirportPanel {
 
         VBox content = new VBox(8);
         content.getChildren().add(form);
-        content.setStyle("-fx-background-color: #16213e;");
+        content.setStyle("-fx-background-color: " + BG_PANEL + ";");
 
         TitledPane pane = new TitledPane("➕  Add New Airport", content);
         pane.setExpanded(false);
@@ -211,16 +230,16 @@ public class AirportPanel {
         box.setAlignment(Pos.CENTER_LEFT);
         box.setPadding(new Insets(4, 0, 4, 0));
 
-        Button removeBtn = styledButton("🗑 Remove Selected", "#e94560");
+        Button removeBtn = styledButton("🗑 Remove Selected", ACCENT_RED);
         removeBtn.setOnAction(e -> removeSelectedAirport());
 
-        Button saveBtn = styledButton("💾 Save to CSV", "#0f3460");
+        Button saveBtn = styledButton("💾 Save to CSV", ACCENT_BLUE);
         saveBtn.setOnAction(e -> saveAirports());
 
-        Button loadBtn = styledButton("📂 Reload from CSV", "#333");
+        Button loadBtn = styledButton("📂 Reload from CSV", ACCENT_SLATE);
         loadBtn.setOnAction(e -> loadAirports());
 
-        Button viewGraphBtn = styledButton("📊 View Connections", "#27ae60");
+        Button viewGraphBtn = styledButton("📊 View Connections", ACCENT_GREEN);
         viewGraphBtn.setOnAction(e -> viewConnections());
 
         box.getChildren().addAll(removeBtn, saveBtn, loadBtn, viewGraphBtn);
@@ -352,8 +371,8 @@ public class AirportPanel {
 
     private void addFormRow(GridPane grid, int row, String labelText, TextField field) {
         Label label = new Label(labelText);
-        label.setTextFill(Color.web("#a8b2d8"));
-        label.setFont(Font.font("Arial", 12));
+        label.setTextFill(Color.web(TEXT_LABEL));
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         grid.add(label, 0, row);
         grid.add(field, 1, row);
         GridPane.setHgrow(field, Priority.ALWAYS);
@@ -372,21 +391,23 @@ public class AirportPanel {
                      "-fx-text-fill: white; " +
                      "-fx-background-radius: 5; " +
                      "-fx-cursor: hand; " +
-                     "-fx-padding: 6 14 6 14;");
+                     "-fx-padding: 6 14 6 14; " +
+                     "-fx-font-weight: bold;");
         return btn;
     }
 
     private String getInputStyle() {
-        return "-fx-background-color: #0f3460; " +
-               "-fx-text-fill: #ccd6f6; " +
-               "-fx-prompt-text-fill: #6272a4; " +
+        return "-fx-background-color: " + BG_INPUT + "; " +
+               "-fx-text-fill: " + TEXT_MAIN + "; " +
+               "-fx-prompt-text-fill: " + PLACEHOLDER + "; " +
                "-fx-background-radius: 4; " +
-               "-fx-border-color: #1f5297; -fx-border-radius: 4;";
+               "-fx-border-color: " + BORDER_INPUT + "; -fx-border-radius: 4;";
     }
 
     private String getComboStyle() {
-        return "-fx-background-color: #0f3460; " +
-               "-fx-text-fill: #ccd6f6;";
+        return "-fx-background-color: " + BG_INPUT + "; " +
+               "-fx-text-fill: " + TEXT_MAIN + "; " +
+               "-fx-border-color: " + BORDER_INPUT + "; -fx-border-radius: 4;";
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
