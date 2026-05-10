@@ -13,7 +13,7 @@ The key insight is that "optimal" means different things to different travelers:
 - A budget traveler wants the **cheapest** route
 - A business traveler wants the **fastest** route
 - A nervous flyer wants the **fewest connections**
-- Most travelers want a **balanced** trade-off
+
 
 This system supports all four criteria using appropriate algorithms for each.
 
@@ -30,7 +30,6 @@ Algorithm Selection
   ├── Cheapest  → DijkstraCheapest  (weight = cost)
   ├── Fastest   → DijkstraFastest   (weight = duration)
   ├── Layovers  → BFSLayover        (weight = 1 per hop)
-  └── Balanced  → BalancedRouteFinder (weight = composite score)
       ↓
 Route Object (path, cost, duration, layovers)
       ↓
@@ -253,40 +252,6 @@ Iterative DFS with an explicit Stack is safer and equivalent.
 - Time: O(V + E)
 - Space: O(V) — stack + visited map
 
-### 4.5 Balanced Route Algorithm
-
-**Scoring function:**
-```
-edgeScore(flight) = costWeight × (cost / maxCost)
-                  + timeWeight × (duration / maxDuration)
-```
-
-**Normalization:** Both cost (USD) and duration (minutes) are divided by
-their maximum values in the graph to bring them to [0, 1] range.
-Without normalization, cost would dominate (USD values are much larger than
-minute values for short flights).
-
-**Example:**
-```
-flight: CAI → DXB, cost=$350, duration=200min
-maxCost in graph = $1200, maxDuration = 1320min
-costWeight = 0.5, timeWeight = 0.5
-
-edgeScore = 0.5 × (350/1200) + 0.5 × (200/1320)
-          = 0.5 × 0.292 + 0.5 × 0.152
-          = 0.146 + 0.076
-          = 0.222
-```
-
-The algorithm runs Dijkstra using `edgeScore` as the edge weight, finding the
-path that minimizes the total composite score.
-
-**User Customization:**
-- `costWeight = 0.8, timeWeight = 0.2` → strongly prefers cheaper routes
-- `costWeight = 0.2, timeWeight = 0.8` → strongly prefers faster routes
-- `costWeight = 0.5, timeWeight = 0.5` → balanced (default)
-
----
 
 ## 5. COMPLEXITY ANALYSIS TABLE
 
@@ -349,7 +314,7 @@ Route tested: Source → Destination (requiring 2-3 hops)
    - Cheapest: CAI→IST→LHR→JFK = $1,650, 15h 15m, 2 layovers
    - Fastest: CAI→LHR→JFK = $1,270, 14h 15m, 1 layover
    - Fewest hops: CAI→LHR→JFK = $1,270, 14h 15m, 1 layover
-   - Balanced (50/50): CAI→LHR→JFK = $1,270, 14h 15m, 1 layover
+   
 
    Note: For this route, Fastest and BFS agree (both find the 2-flight path).
    The cheapest route sacrifices time for a small cost saving.
@@ -450,17 +415,7 @@ For large graphs with deeply connected components, recursion overflows.
 3. Return visit order list
 ```
 
-### Balanced Route Scoring
-```
-1. Scan all edges → find maxCost and maxDuration
-2. For each edge (u → v, cost, duration):
-   edgeScore = costWeight × (cost/maxCost)
-             + timeWeight × (duration/maxDuration)
-3. Run Dijkstra using edgeScore as the weight
-4. Returns path with minimum total composite score
-```
 
----
 
 ## 9. SAMPLE OUTPUTS
 
@@ -511,51 +466,14 @@ Min Layovers  | CAI→LHR→JFK      | $1,270  | 14h 15m  | 1        | 12
 Balanced 50/50| CAI→LHR→JFK      | $1,270  | 14h 15m  | 1        | 15
 ```
 
-### DFS Connectivity Check
-```
-DFS Reachability Check
-══════════════════════
-Source:      CAI
-Destination: SYD
 
-✅ REACHABLE — A path exists from CAI to SYD
-
-Nodes explored (DFS from CAI): 16
-```
-
-### DFS Full Traversal from DXB
-```
-DFS Full Traversal from DXB
-══════════════════════════════════
-Visit order:
-   1. DXB
-   2. LHR
-   3. JFK
-   4. CDG
-   5. FRA
-   6. AMS
-   7. IST
-   8. CAI
-   9. SIN
-  10. HKG
-  11. NRT
-  12. SYD
-  13. BKK
-  14. KUL
-  15. MAD
-
-Total airports reachable: 15
-Total airports in graph:  25
-```
-
----
 
 ## 10. CONCLUSION
 
 This project successfully demonstrates:
 
 1. **Graph modeling** — airports as vertices, flights as directed weighted edges
-2. **Multiple algorithms** — Dijkstra (×2), BFS, DFS, custom balanced
+2. **Multiple algorithms** — Dijkstra (×2), BFS, DFS
 3. **Appropriate data structures** — each chosen for specific performance properties
 4. **File I/O** — CSV-based persistence for airports, flights, and history
 5. **JavaFX GUI** — professional multi-tab interface with tables, forms, and comparison views
