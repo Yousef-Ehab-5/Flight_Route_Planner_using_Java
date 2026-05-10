@@ -2,7 +2,6 @@ package algorithms;
 
 import graph.FlightGraph;
 import model.Flight;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
+ * BY: Mohamed 
  * DFSTraversal.java
  * 
  * Implements Depth-First Search for:
@@ -39,51 +39,44 @@ import java.util.Stack;
  */
 public class Dfstraversal {
 
-    // Tracks nodes explored count for benchmarking
-    private int nodesExplored;
+    
+    private int nodesExplored;  // Tracks nodes explored count for benchmarking
 
-    /**
-     * Performs a full DFS traversal starting from a source airport.
-     * Returns all airports reachable from the source in DFS order.
-     * 
-     * Uses an EXPLICIT Stack (not recursion) to avoid stack overflow
-     * on large graphs.
-     * 
-     * @param graph  The flight graph
-     * @param source Starting airport code
-     * @return List of airport codes in DFS visit order
-     */
+    
     public List<String> traverseFromSource(FlightGraph graph, String source) {
 
         nodesExplored = 0;
 
-        // List to record the DFS visit order
-        List<String> visitOrder = new ArrayList<>();
+        
+        List<String> visitOrder = new ArrayList<>(); // List to record the DFS visit order
 
         // Visited map: prevents revisiting
         Map<String, Boolean> visited = new HashMap<>();
-        for (String code : graph.getAllAirportCodes()) {
+        
+        for (String code : graph.getAllAirportCodes()) 
+        {
             visited.put(code, false);
         }
 
         // ── Stack data structure for DFS ──
-        // Java's Stack class (extends Vector → LIFO)
+        
         Stack<String> stack = new Stack<>();
 
-        // Push source
-        stack.push(source);
+        stack.push(source); // Push source
 
         // ── DFS Main Loop ──
-        while (!stack.isEmpty()) {
+        while (!stack.isEmpty()) 
+        {
 
-            // Pop top element — O(1)
+            // Pop top element 
             String u = stack.pop();
 
-            // Skip if already visited (lazy duplicate handling)
-            if (visited.containsKey(u) && visited.get(u)) {
+            // Skip if already visited 
+            if (visited.containsKey(u) && visited.get(u)) 
+            {
                 continue;
             }
-
+            
             // Mark as visited
             visited.put(u, true);
             visitOrder.add(u);
@@ -95,9 +88,11 @@ public class Dfstraversal {
             List<Flight> flightList = new ArrayList<>(flights);
 
             // Push in reverse so first neighbor is on top
-            for (int i = flightList.size() - 1; i >= 0; i--) {
+            for (int i = flightList.size() - 1; i >= 0; i--) 
+            {
                 String v = flightList.get(i).getDestination();
-                if (visited.containsKey(v) && !visited.get(v)) {
+                if (visited.containsKey(v) && !visited.get(v))
+                {
                     stack.push(v);
                 }
             }
@@ -106,33 +101,20 @@ public class Dfstraversal {
         return visitOrder;
     }
 
-    /**
-     * Checks if the destination is reachable from source using DFS.
-     * 
-     * @param graph       The flight graph
-     * @param source      Source airport code
-     * @param destination Destination airport code
-     * @return true if a path exists, false otherwise
+    /*
+      Checks if the destination is reachable from source using DFS.
      */
-    public boolean isReachable(FlightGraph graph, String source, String destination) {
+    public boolean isReachable(FlightGraph graph, String source, String destination) 
+    {
         List<String> visited = traverseFromSource(graph, source);
         return visited.contains(destination);
     }
 
-    /**
-     * Finds ALL paths from source to destination using recursive DFS.
-     * 
-     * ⚠️ WARNING: Exponential in worst case. Use only for small graphs
-     * or for educational demonstration.
-     * 
-     * @param graph       The flight graph
-     * @param source      Source airport code
-     * @param destination Destination airport code
-     * @param maxDepth    Maximum path length (to prevent infinite loops)
-     * @return List of all paths (each path is a list of airport codes)
-     */
-    public List<List<String>> findAllPaths(FlightGraph graph, String source,
-                                           String destination, int maxDepth) {
+   
+     //Finds ALL paths from source to destination using recursive DFS.   
+     
+    public List<List<String>> findAllPaths(FlightGraph graph, String source, String destination, int maxDepth) 
+    {
 
         List<List<String>> allPaths = new ArrayList<>();
         List<String> currentPath = new ArrayList<>();
@@ -154,22 +136,26 @@ public class Dfstraversal {
                             List<List<String>> allPaths, int maxDepth) {
 
         // Base case: reached destination
-        if (current.equals(destination)) {
+        if (current.equals(destination)) 
+        {
             allPaths.add(new ArrayList<>(currentPath));
             return;
         }
 
         // Depth limit to prevent excessively long paths
-        if (currentPath.size() >= maxDepth) {
+        if (currentPath.size() >= maxDepth) 
+        {
             return;
         }
 
         // Explore neighbors
-        for (Flight flight : graph.getFlightsFrom(current)) {
+        for (Flight flight : graph.getFlightsFrom(current)) 
+        {
             String next = flight.getDestination();
 
             // Avoid cycles in current path
-            if (visitedInPath.containsKey(next) && visitedInPath.get(next)) {
+            if (visitedInPath.containsKey(next) && visitedInPath.get(next)) 
+            {
                 continue;
             }
 
@@ -185,9 +171,9 @@ public class Dfstraversal {
         }
     }
 
-    /**
-     * Returns nodes explored count for benchmarking.
-     */
+   
+     // Returns nodes explored count for benchmarking.
+
     public int getNodesExplored() {
         return nodesExplored;
     }
