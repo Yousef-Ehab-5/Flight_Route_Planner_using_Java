@@ -3,7 +3,6 @@ package algorithms;
 import graph.FlightGraph;
 import model.Flight;
 import model.Route;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,51 +12,51 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
- * BFSLayover.java
- * 
- * Finds the route with the fewest layovers (minimum number of flights)
- * using Breadth-First Search (BFS).
- * 
- * ── Why BFS for Minimum Layovers? ──
- *   BFS explores nodes level by level.
- *   Level 0 = source
- *   Level 1 = airports reachable in 1 flight
- *   Level 2 = airports reachable in 2 flights
- *   ...
- *   The FIRST time BFS reaches the destination, it has used the MINIMUM
- *   number of flights (edges), which directly means minimum layovers.
- * 
- * ── Pseudocode ──
- *   1. Add source to queue, mark visited
- *   2. While queue is not empty:
- *       a. Dequeue airport u
- *       b. For each neighbor v of u:
- *           If v is unvisited:
- *               Mark visited, set parent[v] = u
- *               If v == destination: return path
- *               Enqueue v
- *   3. Reconstruct path via parent map
- * 
- * ── Data Structures ──
- *   Queue  → BFS frontier (LinkedList as Queue)
- *   HashMap → visited set, parent map
- * 
- * ── Complexity ──
- *   Time:  O(V + E)
- *   Space: O(V)
+ ****** BY: Mohamed********
+ 
+  Finds the route with the fewest layovers (minimum number of flights)
+  using Breadth-First Search (BFS).
+  
+ ──---- Why BFS for Minimum Layovers---- ──
+    BFS explores nodes level by level.
+    Level 0 = source
+    Level 1 = airports reachable in 1 flight
+    Level 2 = airports reachable in 2 flights
+ The FIRST time BFS reaches the destination, it has used the MINIMUM
+    number of flights (edges), which directly means minimum layovers.
+ 
+ * ──----------- Pseudocode----------- ──
+    1. Add source to queue, mark visited
+    2. While queue is not empty:
+        a. Dequeue airport u
+        b. For each neighbor v of u:
+           If v is unvisited:
+                Mark visited, set parent[v] = u
+                If v == destination: return path
+                Enqueue v
+     3. Reconstruct path via parent map
+  
+ * ──----------------- Data Structures ─----------------─
+    Queue  → BFS frontier (LinkedList as Queue)
+    HashMap → visited set, parent map
+ 
+ * ──------------------ Complexity ──--------------------------
+    Time:  O(V + E)
+    Space: O(V)
  */
+
+
 public class Bfslayover {
 
-    // Number of nodes explored (for benchmarking)
-    private int nodesExplored;
+    
+    private int nodesExplored;  // Number of nodes explored (for benchmarking)
 
     /**
-     * Finds the minimum-layover route from source to destination.
-     * 
-     * @param graph       The flight graph
-     * @param source      Source airport IATA code
-     * @param destination Destination airport IATA code
-     * @return Route with the fewest flights/layovers
+      Finds the minimum-layover route from source to destination.  
+      graph >>          The flight graph
+      source  >>        Source airport IATA code
+      destination>>  Destination airport IATA code
+      return >>    Route with the fewest flights/layovers
      */
     public Route findMinLayoverRoute(FlightGraph graph, String source, String destination) {
 
@@ -82,13 +81,12 @@ public class Bfslayover {
         }
 
         // ── BFS Queue: LinkedList used as Queue ──
-        // Java's LinkedList implements Queue interface
+        
         Queue<String> queue = new LinkedList<>();
 
         // Enqueue source and mark visited
         visited.put(source, true);
         queue.offer(source);
-
         boolean found = false;
 
         // ── BFS Main Loop ──
@@ -163,9 +161,9 @@ public class Bfslayover {
         return new Route(path, totalCost, totalDuration, "Fewest Layovers");
     }
 
-    /**
-     * Returns nodes explored count for benchmarking.
-     */
+ 
+     // Returns nodes explored count for benchmarking.
+     
     public int getNodesExplored() {
         return nodesExplored;
     }
